@@ -7,4 +7,4 @@ dependencyResolutionManagement {
     }
 }
 rootProject.name = "GeofenceApp"
-include ':app'
+include(":app")
