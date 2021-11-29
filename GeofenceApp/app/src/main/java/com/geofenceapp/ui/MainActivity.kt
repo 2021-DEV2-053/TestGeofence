@@ -97,7 +97,7 @@ class MainActivity : AppCompatActivity(), EasyPermissions.PermissionCallbacks {
         }
     }
     /**
-     * Show the Location settings
+     * Show the Location settings to enable the GPS
      */
     private fun enableLocationSettings() {
         val settingsIntent = Intent(ACTION_LOCATION_SOURCE_SETTINGS)
