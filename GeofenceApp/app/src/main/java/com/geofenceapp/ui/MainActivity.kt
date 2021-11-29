@@ -20,7 +20,6 @@ import pub.devrel.easypermissions.AppSettingsDialog
 import androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult
 import com.geofenceapp.util.ChannelUtils.Companion.createAllChannels
 
-
 private const val RC_LOCATION_PERM = 1
 
 @AndroidEntryPoint
@@ -54,8 +53,6 @@ class MainActivity : AppCompatActivity(), EasyPermissions.PermissionCallbacks {
         return navController.navigateUp(appBarConfiguration)
                 || super.onSupportNavigateUp()
     }
-
-
     private fun hasLocationPermissions(): Boolean {
         return EasyPermissions.hasPermissions(this, Manifest.permission.ACCESS_FINE_LOCATION)
     }
@@ -106,8 +103,5 @@ class MainActivity : AppCompatActivity(), EasyPermissions.PermissionCallbacks {
             // the location services, then when the user clicks the "OK" button,
             enableLocationSettings()
         }
-
     }
-
-
 }

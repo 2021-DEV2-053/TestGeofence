@@ -16,7 +16,6 @@ import com.geofenceapp.util.NotificationUtils.Companion.exitGeofenceNotification
 import com.geofenceapp.util.NotificationUtils.Companion.locationBackgroundNotification
 import com.google.android.gms.maps.model.LatLng
 
-const val CURRENT_LOCATION_UPDATED = "CURRENT_LOCATION_UPDATED"
 const val ACTION_START = "ACTION_START"
 const val ACTION_STOP = "ACTION_STOP"
 /*
