@@ -18,8 +18,6 @@ android {
         versionCode = Config.VERSION_CODE
         versionName = Config.VERSION_NAME
         multiDexEnabled = true
-
-        // testInstrumentationRunner = androidx.test.runner.AndroidJUnitRunner"
     }
     kotlinOptions {
         jvmTarget = "1.8"
@@ -67,8 +65,6 @@ dependencies {
     implementation (Libs.Google.Maps.mapsKtx)
     implementation (Libs.Google.Hilt.android)
     kapt (Libs.Google.Hilt.compiler)
-
-    //Testing
 
 }
 // Allow references to generated code

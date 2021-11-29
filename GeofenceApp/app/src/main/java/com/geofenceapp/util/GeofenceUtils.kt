@@ -4,6 +4,12 @@ import com.google.android.gms.maps.model.LatLng
 
 class GeofenceUtils {
     companion object {
+        /**
+         * calculate the distance between the center of the circle
+         * and the current location (longitude, latitude).
+         * If the distance is smaller than the circle radius,
+         * then the user is inside the geofence, otherwise he's outside the geofence.
+         */
         fun checkInside(
             radius: Double, center: LatLng, currentPosition: LatLng
         ): Boolean {
@@ -11,6 +17,9 @@ class GeofenceUtils {
                 center.longitude, center.latitude, currentPosition.longitude, currentPosition.latitude
             ) < radius
         }
+        /**
+         * Calculate the distance between two points, this function is called in checkInside.
+         */
         fun calculateDistance(
             longitude1: Double, latitude1: Double,
             longitude2: Double, latitude2: Double

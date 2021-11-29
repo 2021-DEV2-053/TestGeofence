@@ -46,6 +46,7 @@ class MainActivity : AppCompatActivity(), EasyPermissions.PermissionCallbacks {
 
         // create channels for notifications
         createAllChannels(this)
+        //check permissions for location and enable the location GPS
         locationTask()
     }
     override fun onSupportNavigateUp(): Boolean {
@@ -72,6 +73,10 @@ class MainActivity : AppCompatActivity(), EasyPermissions.PermissionCallbacks {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults, this)
     }
+
+    /**
+     * Enable location if the permissions are granted
+     */
     override fun onPermissionsGranted(requestCode: Int, perms: MutableList<String>) {
         enableLocation()
     }
@@ -91,11 +96,17 @@ class MainActivity : AppCompatActivity(), EasyPermissions.PermissionCallbacks {
             requestLocationPermissions()
         }
     }
+    /**
+     * Show the Location settings
+     */
     private fun enableLocationSettings() {
         val settingsIntent = Intent(ACTION_LOCATION_SOURCE_SETTINGS)
         launchLocationSettings.launch(settingsIntent)
     }
 
+    /**
+     * Check if the GPS location is enabled
+     */
     private fun enableLocation() {
         val locationManager = getSystemService(Context.LOCATION_SERVICE) as LocationManager
         if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {

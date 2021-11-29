@@ -1,5 +1,6 @@
 package com.geofenceapp.ui.maps
 
+import android.annotation.SuppressLint
 import android.graphics.Color
 import androidx.fragment.app.Fragment
 import android.os.Bundle
@@ -53,6 +54,7 @@ class MapsFragment : Fragment(),
         return binding.root
     }
 
+    @SuppressLint("SetTextI18n")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val mapFragment = childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment?
@@ -75,21 +77,23 @@ class MapsFragment : Fragment(),
                 binding.textViewMessage.text = ""
             }
         }
-
+        // change the radius with a Slider
         binding.SliderRadius.addOnChangeListener { slider, value, fromUser ->
             radius = value.toDouble()
-            binding.textViewRadius.text = radius.toString()
+            binding.textViewRadius.text = String.format("%.2f", radius) + " m"
             if(radiusCircle != null){
                 radiusCircle!!.radius = radius
             }
         }
-
+        // check if the background service is running
         if(isServiceRunning(requireActivity())){
             binding.buttonService.setText(R.string.Stop)
             binding.textViewMessage.setText(R.string.GeofenceApp_is_running)
         }
     }
-
+    /**
+     * check if the user pick a location and provide a radius
+     */
     private fun isValid(): Boolean {
         var isValid = true
         if(radiusMarker == null){
@@ -109,6 +113,9 @@ class MapsFragment : Fragment(),
         try {
             googleMap = gm
             googleMap!!.setOnMapClickListener(this)
+            /**
+             * change the style of the map
+             */
             googleMap!!.setMapStyle(
                 MapStyleOptions.loadRawResourceStyle(
                     requireContext(), R.raw.style_light_json
@@ -122,18 +129,25 @@ class MapsFragment : Fragment(),
     override fun onMarkerClick(marker: Marker): Boolean {
         return true
     }
-
+    /**
+     * Draw a marker and circle
+     */
     override fun onMapClick(point: LatLng) {
         drawRadiusMarker(point)
         drawRadiusCircle(point)
 
         googleMap!!.animateCamera(CameraUpdateFactory.newLatLngZoom(point, zoomLevel))
     }
-
+    /**
+     * Save the zoom level, it will keep the same level when move the camera
+     */
     override fun onCameraMove() {
         val cameraPosition = googleMap!!.cameraPosition
         zoomLevel = cameraPosition.zoom
     }
+    /**
+     * Draw a marker on Google map, it will be the center of the radius
+     */
     private fun drawRadiusMarker(point: LatLng) {
         if(radiusMarker != null){
             radiusMarker!!.remove()
@@ -145,7 +159,9 @@ class MapsFragment : Fragment(),
                 .flat(true)
         )
     }
-
+    /**
+     * Draw a circle, it will represent the radius on the map
+     */
     private fun drawRadiusCircle(point: LatLng) {
         if(radiusCircle != null){
             radiusCircle!!.remove()
