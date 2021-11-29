@@ -6,13 +6,21 @@
     <string name="settings_fragment_label">Settings Fragment</string>
 
     <string name="Settings">Settings</string>
-    <string name="previous">Previous</string>
+
+    <string name="Radius">Radius: </string>
+    <string name="_none">-</string>
 
     <string name="Start">Start</string>
     <string name="Stop">Stop</string>
 
-    <string name="hello_first_fragment">Hello first fragment</string>
-    <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
+    <string name="Select_a_position">(1) Select a position on the Map!</string>
+    <string name="Select_a_radius">(2) Select a radius !</string>
+
+    <string name="GeofenceApp_is_running">GeofenceApp is running</string>
+
+    <string name="Geofence_notification">Geofence notification</string>
+    <string name="enter_in_Geofence">Enter in Geofence !</string>
+    <string name="exit_from_Geofence">Exit from Geofence !</string>
 
 
     <string name="rationale_location">GeofenceApp needs access to your location to know where you are.</string>

@@ -31,13 +31,35 @@
             android:orientation="vertical">
 
             <TextView
-                android:id="@+id/textView_radius"
+                android:id="@+id/textView_message"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_margin="4dp"
                 android:layout_gravity="center"
-                android:textSize="26sp"
-                android:textStyle="bold"
-                android:textAlignment="center"/>
+                android:textAlignment="center"
+                android:textSize="18sp"/>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="4dp"
+                    android:layout_gravity="center"
+                    android:textAlignment="center"
+                    android:text="@string/Radius"/>
+                <TextView
+                    android:id="@+id/textView_radius"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:textSize="26sp"
+                    android:textStyle="bold"
+                    android:textAlignment="center"
+                    android:text="@string/_none"/>
+            </LinearLayout>
+
 
             <com.google.android.material.slider.Slider
                 android:id="@+id/Slider_radius"
@@ -47,11 +69,11 @@
                 android:valueTo="10000.0"  />
 
             <Button
-                android:id="@+id/button_first"
+                android:id="@+id/button_service"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:text="@string/Settings"/>
+                android:text="@string/Start"/>
         </LinearLayout>
     </com.google.android.material.card.MaterialCardView>
 

@@ -1,13 +1,9 @@
 package com.geofenceapp.ui
 
 import android.Manifest
-import android.app.Activity
 import android.content.Context
 import android.content.Intent
-import android.location.Location
-import android.location.LocationListener
 import android.location.LocationManager
-import android.location.LocationProvider
 import android.os.Bundle
 import android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS
 import android.util.Log
@@ -20,20 +16,16 @@ import com.geofenceapp.R
 import com.geofenceapp.databinding.ActivityMainBinding
 import dagger.hilt.android.AndroidEntryPoint
 import pub.devrel.easypermissions.EasyPermissions
-
 import pub.devrel.easypermissions.AfterPermissionGranted
 import pub.devrel.easypermissions.AppSettingsDialog
-import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult
+import com.geofenceapp.util.ChannelUtils.Companion.createAllChannels
 
 
 private const val RC_LOCATION_PERM = 1
 
 @AndroidEntryPoint
-class MainActivity : AppCompatActivity(),
-    EasyPermissions.PermissionCallbacks,
-    LocationListener
-{
+class MainActivity : AppCompatActivity(), EasyPermissions.PermissionCallbacks {
 
     private lateinit var appBarConfiguration: AppBarConfiguration
     private lateinit var binding: ActivityMainBinding
@@ -41,7 +33,6 @@ class MainActivity : AppCompatActivity(),
     private var launchLocationSettings = registerForActivityResult(StartActivityForResult()) { result ->
         locationTask()
     }
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -55,6 +46,8 @@ class MainActivity : AppCompatActivity(),
         appBarConfiguration = AppBarConfiguration(navController.graph)
         setupActionBarWithNavController(navController, appBarConfiguration)
 
+        // create channels for notifications
+        createAllChannels(this)
         locationTask()
     }
     override fun onSupportNavigateUp(): Boolean {
@@ -111,21 +104,13 @@ class MainActivity : AppCompatActivity(),
 
     private fun enableLocation() {
         val locationManager = getSystemService(Context.LOCATION_SERVICE) as LocationManager
-        val gpsEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
-
-        if (!gpsEnabled) {
+        if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
             // Build an alert dialog here that requests that the user enable
             // the location services, then when the user clicks the "OK" button,
             enableLocationSettings()
         }
-        /*locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,
-             10000,          // 10-second interval.
-             10f,             // 10 meters.
-             this)*/
+
     }
 
-    override fun onLocationChanged(position: Location) {
-        Log.d("TAG", "onLocationChanged: $position")
-    }
 
 }

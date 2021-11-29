@@ -54,6 +54,7 @@ dependencies {
     implementation (Libs.AndroidX.appcompat)
     implementation (Libs.AndroidX.fragment)
     implementation (Libs.Kotlin.stdlib)
+    implementation (Libs.Kotlin.Coroutines.android)
     implementation (Libs.AndroidX.Navigation.fragmentKtx)
     implementation (Libs.AndroidX.Navigation.uiKtx)
     implementation (Libs.AndroidX.Lifecycle.viewModelKtx)

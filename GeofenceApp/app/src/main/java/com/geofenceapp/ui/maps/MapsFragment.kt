@@ -1,12 +1,12 @@
 package com.geofenceapp.ui.maps
 
+import android.app.ActivityManager
 import android.graphics.Color
 import androidx.fragment.app.Fragment
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.navigation.fragment.findNavController
 import com.geofenceapp.R
 import com.geofenceapp.databinding.FragmentMapsBinding
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -16,6 +16,9 @@ import com.google.android.material.slider.Slider
 import android.content.res.Resources
 import android.util.Log
 import androidx.fragment.app.viewModels
+import com.geofenceapp.core.GeofenceService
+import com.geofenceapp.data.model.Geofence
+import com.geofenceapp.util.Utils.Companion.isServiceRunning
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.model.*
 import dagger.hilt.android.AndroidEntryPoint
@@ -38,10 +41,9 @@ class MapsFragment : Fragment(),
     private var googleMap: GoogleMap? = null
     private var zoomLevel: Float = 13f
 
-    private var radius: Double = 0.0
     private var radiusCircle: Circle? = null
     private var radiusMarker: Marker? = null
-
+    private var radius: Double = 0.0
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -57,19 +59,23 @@ class MapsFragment : Fragment(),
         val mapFragment = childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment?
         mapFragment?.getMapAsync(this)
 
-        binding.buttonFirst.setOnClickListener {
-            findNavController().navigate(R.id.action_MapsFragment_to_SettingsFragment)
+        binding.buttonService.setOnClickListener {
+            if(!isServiceRunning(requireActivity())){
+                if(isValid()){
+                    val geofence = Geofence(radius,
+                        radiusMarker!!.position.latitude,
+                        radiusMarker!!.position.longitude
+                    )
+                    GeofenceService.start(requireContext(), geofence)
+                    binding.buttonService.setText(R.string.Stop)
+                    binding.textViewMessage.setText(R.string.GeofenceApp_is_running)
+                }
+            }else{
+                GeofenceService.stop(requireContext())
+                binding.buttonService.setText(R.string.Start)
+                binding.textViewMessage.text = ""
+            }
         }
-
-        binding.SliderRadius.addOnSliderTouchListener(object : Slider.OnSliderTouchListener {
-            override fun onStartTrackingTouch(slider: Slider) {
-                // Responds to when slider's touch event is being started
-            }
-
-            override fun onStopTrackingTouch(slider: Slider) {
-                // Responds to when slider's touch event is being stopped
-            }
-        })
 
         binding.SliderRadius.addOnChangeListener { slider, value, fromUser ->
             radius = value.toDouble()
@@ -78,20 +84,37 @@ class MapsFragment : Fragment(),
                 radiusCircle!!.radius = radius
             }
         }
+
+        if(isServiceRunning(requireActivity())){
+            binding.buttonService.setText(R.string.Stop)
+            binding.textViewMessage.setText(R.string.GeofenceApp_is_running)
+        }
+    }
+
+    private fun isValid(): Boolean {
+        var isValid = true
+        if(radiusMarker == null){
+            binding.textViewMessage.append(getString(R.string.Select_a_position))
+            isValid = false
+        }
+        if(radius == 0.0){
+            binding.textViewMessage.append("\n")
+            binding.textViewMessage.append(getString(R.string.Select_a_radius))
+            isValid = false
+        }
+
+        return isValid
     }
 
     override fun onMapReady(gm: GoogleMap) {
         try {
             googleMap = gm
             googleMap!!.setOnMapClickListener(this)
-            val success = googleMap!!.setMapStyle(
+            googleMap!!.setMapStyle(
                 MapStyleOptions.loadRawResourceStyle(
                     requireContext(), R.raw.style_light_json
                 )
             )
-            if (!success) {
-                Log.e("MapsFragment", "Style parsing failed.")
-            }
         } catch (e: Resources.NotFoundException) {
             Log.e("MapsFragment", "Can't find style. Error: ", e)
         }
@@ -100,7 +123,6 @@ class MapsFragment : Fragment(),
     override fun onMarkerClick(marker: Marker): Boolean {
         return true
     }
-
 
     override fun onMapClick(point: LatLng) {
         drawRadiusMarker(point)

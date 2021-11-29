@@ -1,13 +1,15 @@
 package com.geofenceapp.util
 
-import com.google.android.gms.maps.model.Circle
+import com.google.android.gms.maps.model.LatLng
 
-class MapsUtils {
+class GeofenceUtils {
     companion object {
-        fun checkInside(circle: Circle, longitude: Double, latitude: Double): Boolean {
+        fun checkInside(
+            radius: Double, center: LatLng, currentPosition: LatLng
+        ): Boolean {
             return calculateDistance(
-                circle.center.longitude, circle.center.latitude, longitude, latitude
-            ) < circle.radius
+                center.longitude, center.latitude, currentPosition.longitude, currentPosition.latitude
+            ) < radius
         }
         fun calculateDistance(
             longitude1: Double, latitude1: Double,
