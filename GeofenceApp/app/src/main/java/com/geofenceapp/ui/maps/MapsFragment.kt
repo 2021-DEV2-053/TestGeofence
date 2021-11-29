@@ -1,6 +1,5 @@
 package com.geofenceapp.ui.maps
 
-import android.app.ActivityManager
 import android.graphics.Color
 import androidx.fragment.app.Fragment
 import android.os.Bundle
@@ -12,7 +11,6 @@ import com.geofenceapp.databinding.FragmentMapsBinding
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
-import com.google.android.material.slider.Slider
 import android.content.res.Resources
 import android.util.Log
 import androidx.fragment.app.viewModels
@@ -34,16 +32,17 @@ class MapsFragment : Fragment(),
     private var _binding: FragmentMapsBinding? = null
     private val viewModel: MapsViewModel by viewModels()
 
-    // This property is only valid between onCreateView and
-    // onDestroyView.
     private val binding get() = _binding!!
 
+    //Maps view
     private var googleMap: GoogleMap? = null
     private var zoomLevel: Float = 13f
 
+    //attributes for Geofence
     private var radiusCircle: Circle? = null
     private var radiusMarker: Marker? = null
     private var radius: Double = 0.0
+
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -142,7 +141,7 @@ class MapsFragment : Fragment(),
         radiusMarker = googleMap!!.addMarker(
             MarkerOptions()
                 .position(point)
-                .title("Marker")
+                .title("Radius")
                 .flat(true)
         )
     }

@@ -19,7 +19,7 @@ android {
         versionName = Config.VERSION_NAME
         multiDexEnabled = true
 
-        // testInstrumentationRunner = androidx.test.runner.AndroidJUnitRunner" mytest.tictactoe.CustomTestRunner
+        // testInstrumentationRunner = androidx.test.runner.AndroidJUnitRunner"
     }
     kotlinOptions {
         jvmTarget = "1.8"

@@ -6,7 +6,6 @@ import android.content.Intent
 import android.location.LocationManager
 import android.os.Bundle
 import android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS
-import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
@@ -77,11 +76,9 @@ class MainActivity : AppCompatActivity(), EasyPermissions.PermissionCallbacks {
         EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults, this)
     }
     override fun onPermissionsGranted(requestCode: Int, perms: MutableList<String>) {
-        Log.d("TAG", "onPermissionsGranted:$requestCode")
         enableLocation()
     }
     override fun onPermissionsDenied(requestCode: Int, perms: MutableList<String>) {
-        Log.d("TAG", "onPermissionsDenied:$requestCode")
         if (EasyPermissions.somePermissionPermanentlyDenied(this, perms)) {
             AppSettingsDialog.Builder(this)
                 .build()

@@ -27,6 +27,4 @@ class GeofenceUtils {
             return 3959 * 1.609 * 1000 * Math.acos(c)
         }
     }
-
-
 }

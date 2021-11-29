@@ -7,6 +7,7 @@ import android.location.Location
 import android.location.LocationListener
 import android.location.LocationManager
 import android.os.Build
+import android.util.Log
 import com.geofenceapp.data.model.Geofence
 import com.geofenceapp.util.GEOFENCEAPP_NOTIFICATION_ID
 import com.geofenceapp.util.GeofenceUtils.Companion.checkInside
@@ -15,6 +16,7 @@ import com.geofenceapp.util.NotificationUtils.Companion.exitGeofenceNotification
 import com.geofenceapp.util.NotificationUtils.Companion.locationBackgroundNotification
 import com.google.android.gms.maps.model.LatLng
 
+const val CURRENT_LOCATION_UPDATED = "CURRENT_LOCATION_UPDATED"
 const val ACTION_START = "ACTION_START"
 const val ACTION_STOP = "ACTION_STOP"
 /*
@@ -26,6 +28,7 @@ class GeofenceService: Service(), LocationListener {
 
     private var locationManager: LocationManager?= null
 
+    //Geofence data
     private var radius: Double = 0.0
     private var center: LatLng? = null
     private var isInside: Boolean? = null
@@ -59,15 +62,16 @@ class GeofenceService: Service(), LocationListener {
 
     private fun startGeofence() {
         locationManager = getSystemService(Context.LOCATION_SERVICE) as LocationManager
-        locationManager!!.requestLocationUpdates(LocationManager.GPS_PROVIDER,10,10f,   this)
+        locationManager!!.requestLocationUpdates(LocationManager.GPS_PROVIDER,1000,1f,   this)
     }
     private fun stopGeofence() {
         locationManager!!.removeUpdates(this)
         stopSelf()
     }
+    override fun onLocationChanged(location: Location) {
+        Log.d("TAG", "onLocationChanged: $location")
 
-    override fun onLocationChanged(currentPos: Location) {
-        val newValue = checkInside(radius, center!!, LatLng(currentPos.latitude, currentPos.longitude))
+        val newValue = checkInside(radius, center!!, LatLng(location.latitude, location.longitude))
 
         if(isInside != null && isInside != newValue){
             isInside = newValue
@@ -78,7 +82,6 @@ class GeofenceService: Service(), LocationListener {
             }
         }
     }
-
 
     companion object {
         fun start(context: Context, geofence: Geofence) {
