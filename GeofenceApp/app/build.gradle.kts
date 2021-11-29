@@ -59,6 +59,8 @@ dependencies {
     implementation (Libs.AndroidX.Lifecycle.viewModelKtx)
     implementation (Libs.AndroidX.Lifecycle.runtimeKtx)
 
+    implementation (Libs.easypermissions)
+
     implementation (Libs.Google.material)
     implementation (Libs.Google.Maps.playServicesMaps)
     implementation (Libs.Google.Maps.mapsKtx)

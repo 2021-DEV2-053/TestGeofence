@@ -98,4 +98,7 @@ object Libs {
         const val junit = "junit:junit:$version"
     }
 
+    const val easypermissions = "pub.devrel:easypermissions:3.0.0"
+
+
 }
