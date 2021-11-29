@@ -19,7 +19,7 @@ const val ACTION_START = "ACTION_START"
 const val ACTION_STOP = "ACTION_STOP"
 /**
  * this is a service that prompts itself to a foreground service with a persistent
- * notification.  Which is now required by Oreo otherwise, a background service without an app will be killed.
+ * notification. Which is now required by Oreo otherwise, a background service without an app will be killed.
  *
  */
 class GeofenceService: Service(), LocationListener {

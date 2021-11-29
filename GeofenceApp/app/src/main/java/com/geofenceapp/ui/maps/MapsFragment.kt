@@ -1,6 +1,7 @@
 package com.geofenceapp.ui.maps
 
-import android.annotation.SuppressLint
+import android.content.Context
+import android.content.SharedPreferences
 import android.graphics.Color
 import androidx.fragment.app.Fragment
 import android.os.Bundle
@@ -44,6 +45,10 @@ class MapsFragment : Fragment(),
     private var radiusMarker: Marker? = null
     private var radius: Double = 0.0
 
+    //Location background service
+    private var isServiceRunning: Boolean = false
+    //get sharedpref to save the geofence
+    private var sharedPref: SharedPreferences? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -54,27 +59,20 @@ class MapsFragment : Fragment(),
         return binding.root
     }
 
-    @SuppressLint("SetTextI18n")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val mapFragment = childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment?
         mapFragment?.getMapAsync(this)
 
+        isServiceRunning = isServiceRunning(requireActivity())
+
         binding.buttonService.setOnClickListener {
             if(!isServiceRunning(requireActivity())){
                 if(isValid()){
-                    val geofence = Geofence(radius,
-                        radiusMarker!!.position.latitude,
-                        radiusMarker!!.position.longitude
-                    )
-                    GeofenceService.start(requireContext(), geofence)
-                    binding.buttonService.setText(R.string.Stop)
-                    binding.textViewMessage.setText(R.string.GeofenceApp_is_running)
+                    startGeofencing()
                 }
             }else{
-                GeofenceService.stop(requireContext())
-                binding.buttonService.setText(R.string.Start)
-                binding.textViewMessage.text = ""
+                stopGeofencing()
             }
         }
         // change the radius with a Slider
@@ -85,10 +83,37 @@ class MapsFragment : Fragment(),
                 radiusCircle!!.radius = radius
             }
         }
-        // check if the background service is running
-        if(isServiceRunning(requireActivity())){
+
+        // disable the slider when the service background is running
+        binding.SliderRadius.isEnabled = !isServiceRunning
+
+        // check if the background service is running to display a message
+        if(isServiceRunning){
             binding.buttonService.setText(R.string.Stop)
             binding.textViewMessage.setText(R.string.GeofenceApp_is_running)
+        }
+    }
+    /**
+     * get the last data radius, latitude, longitude from shared preferences
+     * draw marker and circle on google maps.
+     */
+    private fun fetchDataFromSharedPref() {
+        sharedPref = activity?.getPreferences(Context.MODE_PRIVATE)
+
+        radius = sharedPref!!.getString(getString(R.string.prefs_Radius_key), "0.0")!!.toDouble()
+
+        if(radius != 0.0){
+            binding.SliderRadius.value = radius.toFloat()
+            val latitude = sharedPref!!.getString(getString(R.string.prefs_Latitude_key), "0.0")!!.toDouble()
+            val longitude = sharedPref!!.getString(getString(R.string.prefs_Longitude_key), "0.0")!!.toDouble()
+            val point = LatLng(
+                latitude,
+                longitude
+            )
+            drawRadiusMarker(point)
+            drawRadiusCircle(point)
+
+            googleMap!!.animateCamera(CameraUpdateFactory.newLatLngZoom(point, zoomLevel))
         }
     }
     /**
@@ -108,6 +133,36 @@ class MapsFragment : Fragment(),
 
         return isValid
     }
+    /**
+     * start the GeofenceService
+     * save the geofence into sharefpref, and update the UI.
+     */
+    private fun startGeofencing() {
+        val geofence = Geofence(radius,
+            radiusMarker!!.position.latitude,
+            radiusMarker!!.position.longitude
+        )
+        with (sharedPref!!.edit()) {
+            putString(getString(R.string.prefs_Radius_key), radius.toString())
+            apply()
+        }
+        GeofenceService.start(requireContext(), geofence)
+        binding.buttonService.setText(R.string.Stop)
+        binding.textViewMessage.setText(R.string.GeofenceApp_is_running)
+        binding.SliderRadius.isEnabled = false
+        isServiceRunning = true
+    }
+    /**
+     * stop the GeofenceService
+     * update the UI.
+     */
+    private fun stopGeofencing() {
+        GeofenceService.stop(requireContext())
+        binding.buttonService.setText(R.string.Start)
+        binding.textViewMessage.text = ""
+        binding.SliderRadius.isEnabled = true
+        isServiceRunning = false
+    }
 
     override fun onMapReady(gm: GoogleMap) {
         try {
@@ -121,6 +176,7 @@ class MapsFragment : Fragment(),
                     requireContext(), R.raw.style_light_json
                 )
             )
+            fetchDataFromSharedPref()
         } catch (e: Resources.NotFoundException) {
             Log.e("MapsFragment", "Can't find style. Error: ", e)
         }
@@ -130,13 +186,20 @@ class MapsFragment : Fragment(),
         return true
     }
     /**
-     * Draw a marker and circle
+     * Draw a marker and circle only if the GeofenceService is not running,
+     * save the latitude and longitude of radius into sharedpreference
      */
     override fun onMapClick(point: LatLng) {
-        drawRadiusMarker(point)
-        drawRadiusCircle(point)
-
-        googleMap!!.animateCamera(CameraUpdateFactory.newLatLngZoom(point, zoomLevel))
+        if(!isServiceRunning){
+            drawRadiusMarker(point)
+            drawRadiusCircle(point)
+            with (sharedPref!!.edit()) {
+                putString(getString(R.string.prefs_Latitude_key), point.latitude.toString())
+                putString(getString(R.string.prefs_Longitude_key), point.longitude.toString())
+                apply()
+            }
+            googleMap!!.animateCamera(CameraUpdateFactory.newLatLngZoom(point, zoomLevel))
+        }
     }
     /**
      * Save the zoom level, it will keep the same level when move the camera

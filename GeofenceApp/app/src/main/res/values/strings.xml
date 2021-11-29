@@ -22,6 +22,9 @@
     <string name="enter_in_Geofence">Enter in Geofence !</string>
     <string name="exit_from_Geofence">Exit from Geofence !</string>
 
-
     <string name="rationale_location">GeofenceApp needs access to your location to know where you are.</string>
+
+    <string name="prefs_Radius_key">RADIUS</string>
+    <string name="prefs_Latitude_key">LATITUDE</string>
+    <string name="prefs_Longitude_key">LONGITUDE</string>
 </resources>

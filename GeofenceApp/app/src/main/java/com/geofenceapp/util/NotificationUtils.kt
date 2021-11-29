@@ -23,7 +23,9 @@ class NotificationUtils {
                 .setVisibility(NotificationCompat.VISIBILITY_SECRET)
                 .build()
         }
-
+        /**
+         * Notification when the user enter into the geofence
+         */
         fun enterGeofenceNotification(ctx: Context) {
             NotificationManagerCompat.from(ctx).notify(
                 ENTER_GEOFENCE_NOTIFICATION_ID,
@@ -36,7 +38,9 @@ class NotificationUtils {
                     .build()
             )
         }
-
+        /**
+         * Notification when the user exit from the geofence
+         */
         fun exitGeofenceNotification(ctx: Context) {
             NotificationManagerCompat.from(ctx).notify(
                 EXIT_GEOFENCE_NOTIFICATION_ID,

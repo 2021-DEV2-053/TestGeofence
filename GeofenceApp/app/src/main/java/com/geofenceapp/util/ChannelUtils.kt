@@ -25,7 +25,9 @@ class ChannelUtils {
                 exitGeofenceChannel(ctx)
             }
         }
-
+        /**
+         * this channel will be used for the background location
+         */
         @RequiresApi(api = Build.VERSION_CODES.O)
         private fun locationBackgroundChannel(ctx: Context) {
             val channel = NotificationChannel(
@@ -38,7 +40,9 @@ class ChannelUtils {
             )
             manager?.createNotificationChannel(channel)
         }
-
+        /**
+         * this channel will be used for notification when the user enter into the geofence
+         */
         @RequiresApi(api = Build.VERSION_CODES.O)
         private fun enterGeofenceChannel(ctx: Context) {
             val nm = ctx.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
@@ -54,7 +58,9 @@ class ChannelUtils {
             mChannel.enableVibration(true)
             nm.createNotificationChannel(mChannel)
         }
-
+        /**
+         * this channel will be used for notification when the user exit from the geofence
+         */
         @RequiresApi(api = Build.VERSION_CODES.O)
         private fun exitGeofenceChannel(ctx: Context) {
             val nm = ctx.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
